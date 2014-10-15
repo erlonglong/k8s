@@ -1,3 +1,1 @@
 this is git file!!!
-git is clone!!!
-git is aaa
