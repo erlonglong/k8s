@@ -1,0 +1,49 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-php
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-php
+  template:
+    metadata:
+      labels:
+        app: nginx-php 
+    spec:
+      imagePullSecrets:
+      - name:  $SECRET_NAME
+      containers:
+      - name: nginx-php
+        image: $IMAGE_NAME
+        ports:
+        - containerPort: 80
+          name: nginx-php
+        livenessProbe:
+          httpGet:
+            path: /phpinfo.php
+            port: 80
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 12
+        readinessProbe:
+          httpGet:
+            path: /phpinfo.php
+            port: 80
+          initialDelaySeconds: 60
+          timeoutSeconds: 5
+          failureThreshold: 12
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-php
+spec:
+  type: NodePort
+  selector:
+    app: nginx-php
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 80
