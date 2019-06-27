@@ -1,0 +1,57 @@
+def registry = "hub.k8s.com"
+def project = "dev"
+def app_name = "demo"
+def image_name = "${registry}/${project}/${app_name}:${BUILD_NUMBER}"
+def git_address = "git@10.211.55.14:/home/git/java-demo.git"
+def secret_name = "registry-pull-secret"
+def docker_registry_auth = "898bbf50-9f94-480e-861d-187f5633f26c"
+def git_auth = "71bd0d12-3b2b-4acb-94cb-38f7aa9c6817"
+def k8s_auth = "f3b86b4f-68a7-4913-8f2d-c7683ecaa235"
+podTemplate(label: 'jenkins-slave', cloud: 'kubernetes', containers: [
+    containerTemplate(
+        name: 'jnlp',
+        image: "${registry}/dev/jenkins-slave-jdk:1.8"
+    ),
+  ],
+  volumes: [
+    hostPathVolume(mountPath: '/var/run/docker.sock', hostPath: '/var/run/docker.sock'),
+    hostPathVolume(mountPath: '/usr/bin/docker', hostPath: '/usr/bin/docker')
+  ],
+)
+{
+  node("jenkins-slave"){
+      // 第一步
+      stage('拉取代码'){
+         checkout([$class: 'GitSCM', branches: [[name: '${Branch}']], userRemoteConfigs: [[credentialsId: "${git_auth}", url: "${git_address}"]]])
+      }
+      // 第二步
+      stage('代码编译'){
+          sh "mvn clean package -Dmaven.test.skip=true"
+      }
+      // 第三步
+      stage('构建镜像'){
+          withCredentials([usernamePassword(credentialsId: "${docker_registry_auth}", passwordVariable: 'password', usernameVariable: 'username')]) {
+            sh """
+              echo '
+                FROM lizhenliang/tomcat
+                RUN rm -rf /usr/local/tomcat/webapps/*
+                ADD target/*.war /usr/local/tomcat/webapps/ROOT.war
+              ' > Dockerfile
+              ls
+              ls target
+              docker build -t ${image_name} .
+              echo "${password}"|docker login -u ${username} --password-stdin ${registry}
+              docker push ${image_name}
+            """
+            }
+      }
+      // 第四步
+     stage('部署到K8S平台'){
+          sh """
+          sed -i 's#\$IMAGE_NAME#${image_name}#' deploy.yml
+          sed -i 's#\$SECRET_NAME#${secret_name}#' deploy.yml
+          """
+          kubernetesDeploy configs: 'deploy.yml', kubeconfigId: "${k8s_auth}"
+      }
+  }
+}
