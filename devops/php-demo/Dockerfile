@@ -99,6 +99,7 @@ docker build -t doudou007/nginx-php:latest ./
 docker images |egrep doudou007 
 docker push doudou007/nginx-php:latest
 然后去其他机器运行
+https://cloud.docker.com/repository/docker/doudou007/nginx-php/general
 docker pull doudou007/nginx-php
 docker run -d --name web --rm -p80:80 -v /data/wwwroot:/data/wwwroot doudou007/nginx-php
 docker ps -l 
