@@ -24,7 +24,7 @@ node ("java-slave") {
         /bin/bash $TOMCAT_HOME/bin/startup.sh'''
    }
    stage('test') {
-       sh "curl http://test.aliangedu.com/status.html"
+       sh "curl http://test.xxx.com/status.html"
    }
 }
 ~
