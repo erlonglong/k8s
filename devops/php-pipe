@@ -1,0 +1,15 @@
+node ("slave-14") {
+   stage('git checkout') {
+       checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'e0e289c4-2889-4eba-a725-8388cad661b2', url: 'git@10.211.55.14:/home/git/demo.git']]])
+
+   }
+   stage('code copy') {
+        sh """
+        cp -rf ${WORKSPACE}/wordpress /data/wwwroot/
+        chown nobody.nobody /data/wwwroot/wordpress -R
+        """
+   }
+   stage('test') {
+        sh "curl http://www.k8s.com/check.php"
+   }
+}
