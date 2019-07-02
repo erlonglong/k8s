@@ -1,1 +1,41 @@
+//docker CI&&CD的发布流程
+node ("java-slave") {   // 指定Slave标签
+   // 拉取代码
+   stage('Git Checkout') { 
+        checkout([$class: 'GitSCM', branches: [[name: '$Tag']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@192.168.0.219:/home/git/solo.git']]])
+   }
+   // 代码编译
+   stage('Maven Build') {
+        sh '''
+        export JAVA_HOME=/usr/local/jdk1.8
+        /usr/local/maven3.5/bin/mvn clean package -Dmaven.test.skip=true
+        '''
+   }
+   // 项目打包到镜像并推送到镜像仓库
+   stage('Build and Push Image') {
+sh '''
+REPOSITORY=192.168.0.219/project/solo:${Tag}
+cat > Dockerfile << EOF
+FROM 192.168.0.219/library/tomcat-85:latest
+RUN rm -rf /usr/local/tomcat/webapps/ROOT
+COPY target/*.war /usr/local/tomcat/webapps/ROOT.war
+CMD ["catalina.sh", "run"]
+EOF
+docker build -t $REPOSITORY .
+docker login -u lizhenliang -p NR4tR3LPzZ8= hub.k8s.com
+docker push $REPOSITORY
+'''
+   }
+   // 部署到Docker主机
+   stage('Deploy to Docker') {
+        sh '''
+        REPOSITORY=192.168.0.219/project/solo:${Tag}
+        docker rm -f blog-solo |true
+        docker image rm $REPOSITORY |true
+        docker login -u lizhenliang -p NR4tR3LPzZ8= hub.k8s.com
+        docker container run -d --name blog-solo -v /usr/local/jdk1.8:/usr/local/jdk -p 88:8080 $REPOSITORY
+        '''
+   }
+}
+
 
