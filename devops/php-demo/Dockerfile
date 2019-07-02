@@ -4,11 +4,11 @@
 #yum install gcc  libxslt libxslt-devel libxml2-devel openssl openssl-devel  \
  bzip2 bzip2-devel  libcurl-devel libjpeg-devel libpng-devel freetype-devel perl autoconf gd-devel -y 
 #ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
-#curl -O  http://yum.120ask.com/ctu/soft/libzip-1.2.0.tar.gz
+#curl -O  http://yum.xxx.com/ctu/soft/libzip-1.2.0.tar.gz
 #./configure
 #make && make install 
 #cp /usr/local/lib/libzip/include/zipconf.h /usr/local/include/
-#curl -O http://yum.120ask.com/ctu/soft/php-7.3.6.tar.gz
+#curl -O http://yum.xxx.com/ctu/soft/php-7.3.6.tar.gz
 #./configure --prefix=/usr/local/php \
     --enable-bcmath \
     --enable-calendar \
@@ -53,15 +53,15 @@
     --with-pcre-dir  \
     --with-freetype-dir \
     --without-pear
-curl -O http://yum.120ask.com/ctu/conf/php.ini
-curl -O http://yum.120ask.com/ctu/conf/php-fpm.conf
-curl -O http://yum.120ask.com/ctu/soft/redis-4.3.0.tgz
+curl -O http://yum.xxx.com/ctu/conf/php.ini
+curl -O http://yum.xxx.com/ctu/conf/php-fpm.conf
+curl -O http://yum.xxx.com/ctu/soft/redis-4.3.0.tgz
 listen = /dev/shm/php-fpm.sock
 listen.owner = nobody
 listen.group = nobody
 listen.mode = 0660
 fastcgi_pass unix:/dev/shm/php-fpm.sock;
-curl -O http://yum.120ask.com/ctu/soft/nginx-1.16.0.tar.gz
+curl -O http://yum.xxx.com/ctu/soft/nginx-1.16.0.tar.gz
 ./configure --prefix=/usr/local/nginx \
     --with-poll_module \
     --with-http_ssl_module \
