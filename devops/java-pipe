@@ -1,0 +1,30 @@
+node ("java-slave") {
+   //def mvnHome = '/usr/local/maven'
+   stage('git checkout') {
+        checkout([$class: 'GitSCM', branches: [[name: '${branch}']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'git@192.168.0.216:/home/git/repos/solo']]])
+   }
+   stage('maven build') {
+        sh '''export JAVA_HOME=/usr/local/jdk1.8
+        /usr/local/maven3.3/bin/mvn clean package -Dmaven.test.skip=true'''
+   }
+   stage('deploy') {
+        sh '''export JAVA_HOME=/usr/local/jdk1.8
+        //这里需要注意一下，因为Jenkins会吧启动的tomcat进程杀掉，所以要增加这个，当然你也可以用tomcat的热启动，直接拷贝到webapp下面，访问同名就可以
+        JENKINS_NODE_COOKIE=dontkillme
+        TOMCAT_NAME=tomcat
+        TOMCAT_HOME=/usr/local/$TOMCAT_NAME
+        WWWROOT=$TOMCAT_HOME/webapps/ROOT
+
+        if [ -d $WWWROOT ]; then
+           mv $WWWROOT /data/backup/${TOMCAT_NAME}-$(date +"%F_%T")
+        fi
+        unzip ${WORKSPACE}/target/*.war -d $WWWROOT
+        PID=$(ps -ef |grep $TOMCAT_NAME |egrep -v "grep|$$" |awk \'{print $2}\')
+        [ -n "$PID" ] && kill -9 $PID
+        /bin/bash $TOMCAT_HOME/bin/startup.sh'''
+   }
+   stage('test') {
+       sh "curl http://test.aliangedu.com/status.html"
+   }
+}
+~
