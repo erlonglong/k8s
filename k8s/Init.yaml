@@ -1,0 +1,31 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: nginx
+spec:
+  containers:
+  - name: nginx
+    image: doudou007/nginx
+    ports:
+    - containerPort: 80
+    volumeMounts:
+    - name: app
+      mountPath: /data/wwwroot/
+  - name: php
+    image: doudou007/php:7.3.6
+    volumeMounts:
+    - name: app
+      mountPath: /data/wwwroot/
+  initContainers:
+  - name: demo
+    image: doudou/nginx
+    command:
+    - mv
+    - /data/wwwroot/app
+    - /tmp/
+    volumeMounts:
+    - name: app
+      mountPath: /tmp/
+  volumes:
+  - name: app
+    emptyDir: {}
