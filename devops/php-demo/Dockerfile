@@ -88,6 +88,12 @@ nohup /usr/local/php/sbin/php-fpm -c /usr/local/php/lib/php.ini -y /usr/local/ph
 yum clean all && rm -rf /var/cache/yum/* 
 cd /
 du -sh *
+
+
+
+ls |egrep -v  "^(clear|dir|find|hostname|ldd|logname|more|pwd|sh|split|taskset|true|uptime|whereis|awk|cmp|du|free|iconv|link|mv|raw|base64|echo|id|ls|nohup|tty|vi|bash|cp|egrep|ping|vmstat|xargs|cat|curl|env|grep|ln|pkill|rm|top|cd|gunzip|kill|printenv|tail|touch|zgrep|chmod|date|fc|head|lastlog|logger|printf|sed|sleep|tailf|uniq|watch|chown|df|login|mkdir|ps|sort|tar|tracepath|wc)$"
+
+
 去目录大的地方删除无用的文件和目录
 docker ps -l 
 docker commit -m "nginx-php" 095e3fba99ab doudou007/nginx-php:v1
