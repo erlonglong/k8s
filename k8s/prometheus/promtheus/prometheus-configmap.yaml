@@ -248,22 +248,25 @@ data:
         for: 5m
         labels:
           severity: error
+          node: "{{ $labels.node }}"
         annotations:
           summary: Node Status Error
-          node: "{{ $labels.node }}"
+          description: "节点不可用"
       - alert: Daemonset 不正常报警
         expr: kube_daemonset_status_number_unavailable > 0
         for: 5m
         labels:
           severity: error
+          node: "{{$labels.instance}}"
         annotations:
           summary: "Daemonset Unavailable"
-      - alert: Job 失败报警
-        expr: kube_job_status_failed == 1
-        for: 5m
-        labels:
-          severity: error
-        annotations:
-          summary: "Job Failed"
-          job: "{{ $labels.exported_job }}"
+          description: "Daemonset 不可用"
+      #- alert: Job 失败报警
+      #  expr: kube_job_status_failed == 1
+      #  for: 5m
+      #  labels:
+      #    severity: error
+      #  annotations:
+      #    summary: "Job Failed"
+      #    job: "{{ $labels.exported_job }}"
 
