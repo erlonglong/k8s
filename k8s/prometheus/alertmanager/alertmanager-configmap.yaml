@@ -39,7 +39,7 @@ data:
     receivers:
     #- name: 'default'
     #  email_configs:
-    #  - to: 'ctu@120.net'
+    #  - to: 'ctu@xxx.net'
     #    send_resolved: true
     - name: 'default'
       wechat_configs:
