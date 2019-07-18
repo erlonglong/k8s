@@ -181,27 +181,27 @@ data:
         expr: (node_memory_MemTotal_bytes - (node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes)) / node_memory_MemTotal_bytes * 100 > 80
         for: 1m
         labels:
-          severity: error
+          severity: waning
           team: wechat
           node: "{{$labels.instance}}"
         annotations:
           summary: "内存报警"
           description: "内存使用率超过 80%,当前使用率{{ $value }}%"
       - alert: Pod CPU使用率告警
-        expr: (sum by(name)(rate(container_cpu_usage_seconds_total{image!=""}[5m]))*100) > 75
-        for: 1m
+        expr: (sum by(name)(rate(container_cpu_usage_seconds_total{image!=""}[5m]))*100) > 80
+        for: 10m
         labels:
-          severity: critical
+          severity: waning
           node: "{{$labels.instance}}"
           team: wechat
         annotations:
-          description: "Pod {{ $labels.pod }} CPU 资源利用率大于 75% , 当前使用率{{ $value }}%"
+          description: "Pod {{ $labels.name }} CPU 资源利用率大于80% , 当前使用率{{ $value }}%"
           summary: "CPU使用率告警"
       - alert: Pod 网络报警
         expr: sum by (name)(irate(container_network_receive_bytes_total{container_name="POD"}[1m])) > 1024*1024*50
         for: 10m
         labels:
-          severity: critical
+          severity: waning
           team: wechat
         annotations:
           description: "Pod {{ $labels.pod }} network_receive 资源利用率大于 50M ,  当前值为{{ $value }})"
@@ -218,7 +218,7 @@ data:
           description: "磁盘空间使用超过80%，当前空间使用率 {{ $value }}"
       - alert: Pod 不正常报警
         expr: kube_pod_status_phase{phase="Unknown"} == 1 or kube_pod_status_phase{phase="Failed"} == 1
-        for: 1m
+        for: 5m
         labels:
           severity: error
           team: wechat
@@ -227,7 +227,7 @@ data:
           description: "Pod {{ $labels.pod }} 挂了"
       - alert: Pod 重启报警
         expr: changes(kube_pod_container_status_restarts_total[10m]) > 0 
-        for: 2m
+        for: 5m
         labels:
           severity: error
           team: wechat

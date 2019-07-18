@@ -30,6 +30,7 @@ data:
    {{- end -}}
    {{- end -}}
 
+
    {{- define "wechat.default.message" -}}
    {{- if gt (len .Alerts.Firing) 0 -}}
    {{ template "__text_alert_list" . }}
