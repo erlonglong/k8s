@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp-deploy
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+     app: myapp
+     release: canary
+  template:
+    metadata:
+      labels:
+        app: myapp
+        release: canary
+    spec:
+     containers:
+     - name: myapp
+       image: ikubernetes/myapp:v2
+       ports:
+       - name: http
+         containerPort: 80 
+     #tolerations: 
+     #- key: "node-type"
+     #  operator: "Equal" 
+     #  value: "production"
+     #  effect: "NoExecute" 
+     #  tolerationSeconds: 3600
+     #tolerations: 
+     #- key: "node-type"
+     #  operator: "Equal" 
+     #  value: "production"
+     #  effect: "NoSchedule" 
+     tolerations: 
+     - key: "node-type"
+       operator: "Exists" 
+       value: ""
+       effect: "" 

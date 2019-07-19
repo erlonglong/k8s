@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wechat-tmpl
+  namespace: kube-system 
+data:
+  wechat.tmpl: |
+   {{- define "__text_alert_list" -}}
+   {{- range .Alerts.Firing -}}
+   报警类型: {{ .Labels.alertname }}
+   报警级别: {{ .Labels.severity }}
+   {{ if gt (len .Labels.node) 0 -}}
+   故障主机: {{ .Labels.node }}
+   {{ end -}}
+   报警主题: {{ .Annotations.summary }}
+   报警详情: {{ .Annotations.description }}
+   触发时间: {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}
+   {{- end -}}
+
+   {{- range .Alerts.Resolved -}}
+   报警类型: {{ .Labels.alertname }}
+   报警级别: {{ .Labels.severity }}
+   {{ if gt (len .Labels.node) 0 -}}
+   故障主机: {{ .Labels.node }}
+   {{ end -}}
+   报警主题:  故障恢复提醒
+   报警详情:  {{ .Annotations.description }}
+   触发时间: {{ (.StartsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}
+   恢复时间: {{ (.EndsAt.Add 28800e9).Format "2006-01-02 15:04:05" }}
+   {{- end -}}
+   {{- end -}}
+
+
+   {{- define "wechat.default.message" -}}
+   {{- if gt (len .Alerts.Firing) 0 -}}
+   {{ template "__text_alert_list" . }}
+   {{- end -}}
+   {{- if gt (len .Alerts.Resolved) 0 -}}
+   {{ template "__text_alert_list" . }}
+   {{- end -}}
+   {{- end -}}

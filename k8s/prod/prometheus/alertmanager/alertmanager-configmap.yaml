@@ -1,0 +1,61 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: alertmanager-config
+  namespace: kube-system
+  labels:
+    kubernetes.io/cluster-service: "true"
+    addonmanager.kubernetes.io/mode: EnsureExists
+data:
+  alertmanager.yml: |
+    global:
+      resolve_timeout: 5m
+      smtp_smarthost: 'smtp.qiye.aliyun.com:465'
+      smtp_from: 'doudou@xxx.net'
+      smtp_auth_username: 'doudou@xxx.net'
+      smtp_auth_password: 'xxxxx'
+      smtp_hello: 'xxx.net'
+      smtp_require_tls: false
+      wechat_api_corp_id: 'wxxxxxxxxxxxx'
+      wechat_api_url: 'https://qyapi.weixin.qq.com/cgi-bin/'
+      wechat_api_secret: 'xxxxxxxxxxxxxx'
+    templates:
+      - "/etc/alertmanager-tmpl/wechat.tmpl"
+    route:
+      group_by: ['alertname', 'cluster','alertname_wechat']
+      group_wait: 30s
+      group_interval: 1m
+      repeat_interval: 5m
+      receiver: default
+      routes:
+      - receiver: email
+        group_wait: 10s
+        match:
+          team: node
+      - receiver: 'wechat'
+        group_wait: 10s
+        match:
+          team: wechat 
+    receivers:
+    #- name: 'default'
+    #  email_configs:
+    #  - to: 'ctu@xxx.net'
+    #    send_resolved: true
+    - name: 'default'
+      wechat_configs:
+      - send_resolved: true
+        corp_id: 'wxxxxxxxxxxx'
+        to_party: '2'
+        agent_id: '1000004'
+        api_secret: 'xxxxxxxxxxxxxxxxxxxxx'
+    - name: 'email'
+      email_configs:
+      - to: 'ctu@xxx.net'
+        send_resolved: true
+    - name: 'wechat'
+      wechat_configs:
+      - send_resolved: true
+        corp_id: 'wxxxxxxxxxxxx'
+        to_party: '2'
+        agent_id: '1000004'
+        api_secret: 'xxxxxxxxxxxxxxxx'
