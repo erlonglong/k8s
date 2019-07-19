@@ -42,11 +42,11 @@ spec:
         image: doudou007/addon-resizer:1.8.5
         resources:
           limits:
-            cpu: 100m
-            memory: 30Mi
+            cpu: 500m
+            memory: 500Mi
           requests:
-            cpu: 100m
-            memory: 30Mi
+            cpu: 300m
+            memory: 300Mi
         env:
           - name: MY_POD_NAME
             valueFrom:
@@ -63,10 +63,10 @@ spec:
           - /pod_nanny
           - --config-dir=/etc/config
           - --container=kube-state-metrics
-          - --cpu=100m
+          - --cpu=200m
           - --extra-cpu=1m
           - --memory=100Mi
-          - --extra-memory=2Mi
+          - --extra-memory=20Mi
           - --threshold=5
           - --deployment=kube-state-metrics
       volumes:
