@@ -2,7 +2,7 @@
 #docker run -d --name centos -it centos 
 #docker exec -it centos bash 
 #yum install gcc  libxslt libxslt-devel libxml2-devel openssl openssl-devel  \
- bzip2 bzip2-devel  libcurl-devel libjpeg-devel libpng-devel freetype-devel perl autoconf gd-devel -y 
+ bzip2 bzip2-devel  libcurl-devel libjpeg-devel libpng-devel freetype-devel perl  gcc-c++ gcc-g77 autoconf gd-devel -y 
 #ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
 #curl -O  http://yum.xxx.com/ctu/soft/libzip-1.2.0.tar.gz
 #./configure
