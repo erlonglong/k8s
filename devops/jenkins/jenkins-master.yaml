@@ -54,17 +54,18 @@ spec:
       serviceAccountName: jenkins
       containers:
         - name: jenkins
-          image: jenkins/jenkins:lts-alpine
+          image: doudou007/jenkins-master:v1
+          
           ports:
             - containerPort: 8080
             - containerPort: 50000
           resources:
             limits:
-              cpu: 1
-              memory: 1Gi
+              cpu: 2
+              memory: 8Gi
             requests:
-              cpu: 0.5
-              memory: 500Mi
+              cpu: 1
+              memory: 4Gi
           env:
             - name: LIMITS_MEMORY
               valueFrom:
@@ -76,6 +77,10 @@ spec:
           volumeMounts:
             - name: jenkins-home
               mountPath: /var/jenkins_home
+            - name: docker
+              mountPath: /usr/bin/docker
+            - name: dockersock
+              mountPath: /var/run/docker.sock
           livenessProbe:
             httpGet:
               path: /login
@@ -90,6 +95,13 @@ spec:
             initialDelaySeconds: 60
             timeoutSeconds: 5
             failureThreshold: 12 # ~2 minutes
+      volumes:
+      - name: docker
+        hostPath:
+         path: /usr/bin/docker
+      - name: dockersock
+        hostPath:
+         path: /var/run/docker.sock
   volumeClaimTemplates:
   - metadata:
       name: jenkins-home
@@ -98,7 +110,7 @@ spec:
       accessModes: [ "ReadWriteOnce" ]
       resources:
         requests:
-          storage: 1Gi
+          storage: 10Gi
 ---
 apiVersion: v1
 kind: Service
