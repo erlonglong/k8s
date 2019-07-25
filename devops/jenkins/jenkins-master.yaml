@@ -54,7 +54,7 @@ spec:
       serviceAccountName: jenkins
       containers:
         - name: jenkins
-          image: doudou007/jenkins-master:v1
+          image: doudou007/jenkins-master:v5
           
           ports:
             - containerPort: 8080
@@ -73,7 +73,8 @@ spec:
                   resource: limits.memory
                   divisor: 1Mi
             - name: JAVA_OPTS
-              value: -Xmx$(LIMITS_MEMORY)m -XshowSettings:vm -Dhudson.slaves.NodeProvisioner.initialDelay=0 -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85
+              #-Dfile.encoding=UTF8 Jenkins控制台乱码,增加这个参数
+              value: -Xmx$(LIMITS_MEMORY)m -XshowSettings:vm  -Dfile.encoding=UTF8 -Dhudson.slaves.NodeProvisioner.initialDelay=0 -Dhudson.slaves.NodeProvisioner.MARGIN=50 -Dhudson.slaves.NodeProvisioner.MARGIN0=0.85
           volumeMounts:
             - name: jenkins-home
               mountPath: /var/jenkins_home
