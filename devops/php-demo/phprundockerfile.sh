@@ -112,6 +112,10 @@ docker ps -l
 curl http://node:80
 
 
+删除不运行的镜像
+docker images |awk '{print $3}'|xargs docker rmi -f
+docker images |egrep harbor|awk -v OFS=':' '{print $1,$2}'|xargs docker rmi
+
 
 
 
