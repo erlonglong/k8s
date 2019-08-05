@@ -15,5 +15,3 @@ spec:
       targetPort: 9093
   selector:
     k8s-app: alertmanager
-  #type: "ClusterIP"
-  type: NodePort

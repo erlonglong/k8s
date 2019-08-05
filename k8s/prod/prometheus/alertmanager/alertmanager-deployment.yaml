@@ -30,7 +30,6 @@ spec:
           args:
             - --config.file=/etc/config/alertmanager.yml
             - --storage.path=/data
-            - --web.external-url=/
           ports:
             - containerPort: 9093
           readinessProbe:

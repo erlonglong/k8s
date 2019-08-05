@@ -187,6 +187,7 @@ data:
         annotations:
           summary: "内存报警"
           description: "内存使用率超过 80%,当前使用率{{ $value }}%"
+          message: "内存使用率恢复正常值"
       - alert: Pod CPU使用率告警
         expr: (sum by(name)(rate(container_cpu_usage_seconds_total{image!=""}[5m]))*100) > 80
         for: 10m
@@ -196,6 +197,7 @@ data:
           team: wechat
         annotations:
           description: "Pod {{ $labels.name }} CPU 资源利用率大于80% , 当前使用率{{ $value }}%"
+          message: "Pod {{ $labels.name }} CPU 资源利用恢复正常值"
           summary: "CPU使用率告警"
       - alert: Pod 网络报警
         expr: sum by (name)(irate(container_network_receive_bytes_total{container_name="POD"}[1m])) > 1024*1024*50
@@ -205,6 +207,7 @@ data:
           team: wechat
         annotations:
           description: "Pod {{ $labels.pod }} network_receive 资源利用率大于 50M ,  当前值为{{ $value }})"
+          message: "Pod {{ $labels.pod }} network_receive 资源利用率恢复"
           summary: "Pod网络告警"            
       - alert: node 磁盘空间使用报警
         expr: (node_filesystem_size_bytes{device="rootfs"} - node_filesystem_free_bytes{device="rootfs"}) / node_filesystem_size_bytes{device="rootfs"} * 100 > 80
@@ -216,6 +219,7 @@ data:
         annotations:
           summary: "磁盘空间报警"
           description: "磁盘空间使用超过80%，当前空间使用率 {{ $value }}"
+          message: "磁盘空间使用恢复到正常"
       - alert: Pod 不正常报警
         expr: kube_pod_status_phase{phase="Unknown"} == 1 or kube_pod_status_phase{phase="Failed"} == 1
         for: 5m
@@ -225,6 +229,7 @@ data:
         annotations:
           summary: "Pod Down"
           description: "Pod {{ $labels.pod }} 挂了"
+          message: "Pod {{ $labels.pod }} 恢复"
       - alert: Pod 重启报警
         expr: changes(kube_pod_container_status_restarts_total[10m]) > 0 
         for: 5m
@@ -234,6 +239,7 @@ data:
         annotations:
           summary: Pod restart
           description: "{{ $labels.namespace }}下的Pod:{{ $labels.pod }} 重启了"
+          message: "{{ $labels.namespace }}下的Pod:{{ $labels.pod }} 恢复了"
       - alert: node 不能调度报警
         expr: kube_node_spec_unschedulable == 1
         for: 5m
@@ -243,6 +249,7 @@ data:
         annotations:
           summary: "节点不能调度"
           description: "{{$labels.instance}}:节点不能调度"
+          message: "{{$labels.instance}}:节点恢复"
       - alert: node 不正常报警
         expr: kube_node_status_condition{condition="Ready", status!="true"} == 1
         for: 5m
@@ -252,6 +259,7 @@ data:
         annotations:
           summary: Node Status Error
           description: "节点不可用"
+          message: "节点恢复"
       - alert: Daemonset 不正常报警
         expr: kube_daemonset_status_number_unavailable > 0
         for: 5m
@@ -261,6 +269,7 @@ data:
         annotations:
           summary: "Daemonset Unavailable"
           description: "Daemonset 不可用"
+          message: "Daemonset 恢复"
       #- alert: Job 失败报警
       #  expr: kube_job_status_failed == 1
       #  for: 5m
