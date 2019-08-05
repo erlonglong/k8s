@@ -8,7 +8,7 @@
 #./configure
 #make && make install 
 #cp /usr/local/lib/libzip/include/zipconf.h /usr/local/include/
-#curl -O http://yum.xxx.com/ctu/soft/php-7.3.6.tar.gz
+#curl -O http://yum.xxx.com/ctu/soft/php-7.3.7.tar.gz
 #./configure --prefix=/usr/local/php \
     --enable-bcmath \
     --enable-calendar \
@@ -111,6 +111,10 @@ docker run -d --name web --rm -p80:80 -v /data/wwwroot:/data/wwwroot doudou007/n
 docker ps -l 
 curl http://node:80
 
+
+删除不运行的镜像
+docker images |awk '{print $3}'|xargs docker rmi -f
+docker images |egrep harbor|awk -v OFS=':' '{print $1,$2}'|xargs docker rmi
 
 
 

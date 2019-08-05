@@ -1,4 +1,4 @@
-FROM harbor.120.net/devops/centos:7.6
+FROM centos
 RUN yum install gcc  libxslt libxslt-devel libxml2-devel openssl openssl-devel  bzip2 bzip2-devel  libcurl-devel libjpeg-devel libpng-devel freetype-devel perl  gcc-c++ gcc-g77 autoconf gd-devel -y \
 && ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone;cd /usr/local/src/ \
 && curl -O  http://yum.120ask.com/ctu/soft/libzip-1.2.0.tar.gz  && tar -zxvf libzip-1.2.0.tar.gz &&cd libzip-1.2.0 && ./configure && make && make install \ 
